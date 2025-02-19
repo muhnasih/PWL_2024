@@ -1,55 +1,32 @@
 <?php
 
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\ArticlesController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\PhotoController;
-use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SalesController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/',[HomeController::class,'index']);
-
-Route::get('/hello', [WelcomeController::class,'hello']);
-
-Route::get('/world', function () {
-    return 'world';
+Route::prefix('category')->group(function () {
+    Route::get('/food-beverage', [ProductController::class, 'foodBeverage']);
+    Route::get('/beauty-health', [ProductController::class, 'beautyHealth']);
+    Route::get('/home-care', [ProductController::class, 'homeCare']);
+    Route::get('/baby-kid', [ProductController::class, 'babyKid']);
 });
 
-Route::get('/about',[AboutController::class,'about']);
+Route::get('/user/{id}/name/{name}', [UserController::class, 'show']);
 
-Route::get('/user/{name}', function ($name) {
-    return 'Nama saya '.$name;
-    });
+Route::get('/sales', [SalesController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/posts/{post}/comments/{comment}', function ($postId, $commentId) {
-    return 'Pos ke-'.$postId." Komentar ke-: ".$commentId;
+Route::prefix('category')->group(function () {
+    Route::get('/food-beverage', [ProductController::class, 'foodBeverage'])->name('category.food-beverage');
+    Route::get('/beauty-health', [ProductController::class, 'beautyHealth'])->name('category.beauty-health');
+    Route::get('/home-care', [ProductController::class, 'homeCare'])->name('category.home-care');
+    Route::get('/baby-kid', [ProductController::class, 'babyKid'])->name('category.baby-kid');
 });
 
-Route::get('/articles/{articlesId}',[ArticleController::class,'articles']);
+Route::get('/user/{id}/name/{name}', [UserController::class, 'show'])->where('id', '[0-9]+')->where('name', '[a-zA-Z]+');
 
-Route::get('/user/{name?}', function ($name= 'John') {
-    return 'Nama saya '.$name;
-    });
-
-Route::resource('photos', PhotoController::class)->only([
-    'index', 'show'
-    ]);
-Route::resource('photos', PhotoController::class)->except([
-    'create', 'store', 'update', 'destroy'
-    ]);
-
-    Route::get('/greeting', [WelcomeController::class,
-    'greeting']);
+Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
